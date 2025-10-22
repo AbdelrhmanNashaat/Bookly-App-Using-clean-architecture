@@ -2,9 +2,11 @@ import 'package:bookly_app_clean_architecture/Features/home/data/data_sources/ho
 import 'package:bookly_app_clean_architecture/Features/home/data/data_sources/home_remote_data_source.dart';
 import 'package:bookly_app_clean_architecture/Features/home/domain/entities/book_entity.dart';
 import 'package:bookly_app_clean_architecture/Features/home/domain/repos/home_repo.dart';
+import 'package:bookly_app_clean_architecture/constants.dart';
 import 'package:bookly_app_clean_architecture/core/errors/failure.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 
 class HomeRepoImpl extends HomeRepo {
   final HomeRemoteDataSource homeRemoteDataSource;
@@ -50,6 +52,50 @@ class HomeRepoImpl extends HomeRepo {
         pageNumber: pageNumber,
       );
       return Right(books);
+    } catch (e) {
+      if (e is DioException) {
+        return Left(ServerFailure.fromDioException(e));
+      }
+      return Left(ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookEntity>>> fetchSimilarBooks({
+    int pageNumber = 0,
+  }) async {
+    try {
+      List<BookEntity> books = [];
+      books = homeLocalDataSource.fetchSimilarBooks(pageNumber: pageNumber);
+      if (books.isNotEmpty) {
+        return Right(books);
+      }
+      books = await homeRemoteDataSource.fetchSimilarBooks(
+        pageNumber: pageNumber,
+      );
+      return Right(books);
+    } catch (e) {
+      if (e is DioException) {
+        return Left(ServerFailure.fromDioException(e));
+      }
+      return Left(ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookEntity>>> searchBooks({
+    required String query,
+  }) async {
+    try {
+      final box = Hive.box<BookEntity>(kFeaturedBooks);
+      final List<BookEntity> results = box.values
+          .where(
+            (book) =>
+                book.title!.toLowerCase().contains(query.toLowerCase()) ||
+                book.author!.toLowerCase().contains(query.toLowerCase()),
+          )
+          .toList();
+      return Right(results);
     } catch (e) {
       if (e is DioException) {
         return Left(ServerFailure.fromDioException(e));

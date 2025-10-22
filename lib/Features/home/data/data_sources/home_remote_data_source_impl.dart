@@ -29,6 +29,16 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
     return books;
   }
 
+  @override
+  Future<List<BookEntity>> fetchSimilarBooks({int pageNumber = 0}) async {
+    final data = await apiService.get(
+      url: 'volumes?q=computers&startIndex=${pageNumber * 10}',
+    );
+    List<BookEntity> books = parseBooks(data['items']);
+    saveLocalData(books: books, boxName: kSimilarBooks);
+    return books;
+  }
+
   List<BookEntity> parseBooks(List<dynamic> items) {
     return items.map((item) => BookModel.fromJson(item)).toList();
   }

@@ -43,7 +43,10 @@ class BookDetailsSection extends StatelessWidget {
           numberOfRatings: (book.ratingsCount ?? 0).toDouble(),
         ),
         const SizedBox(height: 37),
-        BooksAction(price: (book.price)?.toDouble() ?? 0),
+        BooksAction(
+          price: (book.price)?.toDouble() ?? 0,
+          bookLink: book.previewLink ?? '',
+        ),
       ],
     );
   }

@@ -28,4 +28,16 @@ class HomeLocalDataSourceImp extends HomeLocalDataSource {
     }
     return box.values.toList().sublist(startIndex, endIndex);
   }
+
+  @override
+  List<BookEntity> fetchSimilarBooks({int pageNumber = 0}) {
+    int startIndex = pageNumber * 10;
+    int endIndex = (startIndex + 1) * 10;
+    var box = Hive.box<BookEntity>(kSimilarBooks);
+    int length = box.values.length;
+    if (startIndex >= length || endIndex > length) {
+      return [];
+    }
+    return box.values.toList().sublist(startIndex, endIndex);
+  }
 }
