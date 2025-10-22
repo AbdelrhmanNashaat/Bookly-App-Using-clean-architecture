@@ -10,17 +10,19 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
 
   HomeRemoteDataSourceImpl({required this.apiService});
   @override
-  Future<List<BookEntity>> fetchFeaturedBooks() async {
-    final data = await apiService.get(url: 'volumes?Sorting=relevance');
+  Future<List<BookEntity>> fetchFeaturedBooks({int pageNumber = 0}) async {
+    final data = await apiService.get(
+      url: 'volumes?q=programming&startIndex=${pageNumber * 10}',
+    );
     List<BookEntity> books = parseBooks(data['items']);
     saveLocalData(books: books, boxName: kFeaturedBooks);
     return books;
   }
 
   @override
-  Future<List<BookEntity>> fetchNewestBooks() async {
+  Future<List<BookEntity>> fetchNewestBooks({int pageNumber = 0}) async {
     final data = await apiService.get(
-      url: 'volumes?Sorting=newest&q=programming',
+      url: 'volumes?Sorting=newest&q=programming&startIndex=${pageNumber * 10}',
     );
     List<BookEntity> books = parseBooks(data['items']);
     saveLocalData(books: books, boxName: kNewestBooks);
