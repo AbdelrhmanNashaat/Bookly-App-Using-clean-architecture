@@ -33,7 +33,7 @@ class BookListViewItem extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 30),
+            const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,6 +62,7 @@ class BookListViewItem extends StatelessWidget {
                       ),
                       const Spacer(),
                       const BookRating(),
+                      SizedBox(width: 6),
                     ],
                   ),
                 ],
