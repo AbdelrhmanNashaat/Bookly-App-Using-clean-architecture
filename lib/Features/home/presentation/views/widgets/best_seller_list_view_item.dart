@@ -17,11 +17,11 @@ class BookListViewItem extends StatelessWidget {
         GoRouter.of(context).push(AppRouter.kBookDetailsView);
       },
       child: SizedBox(
-        height: 125,
+        height: 160,
         child: Row(
           children: [
             AspectRatio(
-              aspectRatio: 2.5 / 4,
+              aspectRatio: 3 / 4,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
